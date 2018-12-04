@@ -7,8 +7,22 @@
 </head>
 
 <body>
-    <p>Aquí estará el videojuego...</p>
-    
+    <div>
+        <div>
+            <span>Score: </span>
+            <span id="score">-</span>
+        </div>
+        <div>
+            <span>Max Score: </span>
+            <span id="max_score">-</span>
+        </div>
+    </div>
+    <table id="tetris" style="border: 1px solid black; background-color: black;"></table>
+
+    <!-- CARGA DE JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
     <!-- CARGA DE SCRIPTS -->
     <script src="./js/constants.js"></script>
     <script src="./js/objects/Tetris.js"></script>

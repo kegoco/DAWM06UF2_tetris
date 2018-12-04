@@ -3,12 +3,14 @@ var Tetris = {
     // Variables
     game_state: false,  // true = Juego en marcha, false = Fin del juego
     board: [],  // x = 10, y = 25; 0 -> vacío, 1 -> Lleno
+    // IDEA TABLERO
+    // - Guardar en cada posición un objeto vacío (en caso de que no haya pieza) o guardar el objeto de la pieza
     board_state: false,  // true = Puede instanciar pieza, false = No puede instanciar más piezas
     score: 0,
     max_score: 0,
     pieces_to_play: {
         current_piece: {},
-        next_piece : {}
+        next_piece: {}
     },
     used_pieces: {
         "I": 0,
@@ -32,7 +34,7 @@ var Tetris = {
         this.max_score = this.loadMaxScore();
         this.pieces_to_play = {
             current_piece: {},
-            next_piece : {}
+            next_piece: {}
         };
         this.used_pieces = {
             "I": 0,
@@ -75,6 +77,7 @@ var Tetris = {
         this.used_pieces[piece_name]++;
         if (this.pieces_count % 10 == 0) {
             this.level++;
+            this.increaseScore(20);  // Incrementa la puntuación
             this.createRoutine();
         }
     },
@@ -95,6 +98,7 @@ var Tetris = {
                 break;
             case 40:  // abajo
                 // TODO: Bajar la pieza
+                Tetris.increaseScore(1);  // Incrementa la puntuación
                 break;
             case 65:  // A
                 // TODO: Llamar a la función "leftRotate" del objeto pieza
@@ -111,14 +115,23 @@ var Tetris = {
             IDEA
             La función "downMove" devolverá true si ha podido realizar el movimiento, sino
             devolverá false para dar paso a la siguiente pieza.
+
+            - Cuando ya no pueda mover más una nueva se tendrá que ejecutar el siguiente
+            trozo de código: "this.increaseScore(10);"
         */
     },
     initializeBoard: function () {
         var result = [];
-        for (var x = 0; x < COLUMNS; x++) {
+        // for (var x = 0; x < COLUMNS; x++) {
+        //     result.push([]);
+        //     for (var y = 0; y < ROWS; y++) {
+        //         result[x].push(0);
+        //     }
+        // }
+        for (var y = 0; y < ROWS; y++) {
             result.push([]);
-            for (var y = 0; y < ROWS; y++) {
-                result[x].push(0);
+            for (var x = 0; x < COLUMNS; x++) {
+                result[y].push(0);
             }
         }
         return result;
@@ -131,16 +144,34 @@ var Tetris = {
                 value = parseInt(itemArray[1]);
             }
         });
+
+        $("#max_score").text(value);  // Meustra la puntuación máxima por pantalla
         return value;
     },
     increaseScore: function (points) {
         // Incrementa la puntuación
         this.score += points;
+        this.refreshScore();
     },
     paintScreen: function () {
         // Muestra el videojuego por pantalla
         // IDEA: Hacer una tabla y hacer uso de JQuery...
         // TODO: Mostrar el videojuego en el html
+        var table = $("#tetris");
+        table.empty();
+        var content = "";
+        for (var y = ROWS - 1; y >= 0; y--) {
+            content += "<tr>";
+            for (var x = 0; x < COLUMNS; x++) {
+                // TODO: Mirar la variable "board" para saber el color de la pieza a pintar
+                content += "<td style='background-color: #A9A9A9; width: 20px; height: 20px;'></td>";  // TODO: Dependiendo de la pieza se tendrá que pintar de un color o de otro
+            }
+            content += "</tr>";
+        }
+        table.append(content);
+    },
+    refreshScore: function () {
+        $("#score").text(this.score);
     },
     initializeRoutine: function (miliseconds) {
         return setInterval((self) => {  // "self" hace referencia a la clase Tetris
