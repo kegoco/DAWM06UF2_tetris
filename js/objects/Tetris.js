@@ -11,14 +11,16 @@ var Tetris = {
         next_piece : {}
     },
     used_pieces: {
-        "i": 0,
-        "j": 0,
-        "l": 0,
-        "o": 0,
-        "s": 0,
-        "t": 0,
-        "z": 0
+        "I": 0,
+        "J": 0,
+        "L": 0,
+        "O": 0,
+        "S": 0,
+        "T": 0,
+        "Z": 0
     },
+    pieces_count: 0,
+    level: 1,
     routine: undefined,
 
     // Funciones
@@ -33,29 +35,83 @@ var Tetris = {
             next_piece : {}
         };
         this.used_pieces = {
-            "i": 0,
-            "j": 0,
-            "l": 0,
-            "o": 0,
-            "s": 0,
-            "t": 0,
-            "z": 0
+            "I": 0,
+            "J": 0,
+            "L": 0,
+            "O": 0,
+            "S": 0,
+            "T": 0,
+            "Z": 0
         };
-        this.routine = this.initializeRoutine(1000);  // Inicializa el intervalo a 1 segundo
+        this.pieces_count = 0;
+        this.level = 1;
+        document.addEventListener('keydown', this.moveCurrentPiece);  // Inicializa el evento para recibir ordenes del teclado
+        this.createRoutine();
+
+        // Inicializa la variable "pieces_to_play":
+        this.calculateNextPiece();
+        this.changeCurrentPiece();
+        this.calculateNextPiece();
 
         console.log("::: TETRIS INICIALIZADO :::");
     },
     calculateNextPiece: function () {
-        // Calcular de forma aleatoria la siguiente pieza
+        // 1.- Coger de forma aleatoria una pieza
+        var index = Math.floor(Math.random() * AVAILABLE_PIECES.length);
+        var data = AVAILABLE_PIECES[index];
 
+        // TODO: Crear una pieza y pasarle a su constructor los datos de la variable "data"
+        // TODO: Guardar la pieza "pieces_to_play/next_piece"
     },
-    moveCurrentPiece: function () {
+    changeCurrentPiece: function () {
+        // La siguiente pieza pasa a ser la pieza actual
+        this.pieces_to_play.current_piece = this.pieces_to_play.next_piece;
+        this.next_piece = {};
+        this.incrementUsedPieces(this.pieces_to_play.current_piece.name);  // TODO: "name" contandrá el nombre de la pieza
+    },
+    incrementUsedPieces: function (piece_name) {
+        // Incrementa el uso de una pieza
+        this.pieces_count++;
+        this.used_pieces[piece_name]++;
+        if (this.pieces_count % 10 == 0) {
+            this.level++;
+            this.createRoutine();
+        }
+    },
+    createRoutine: function () {
+        // Destruye el intervalo actual y crea otro
+        this.killInterval();
+        var time = 1100 - ((1100 * (10 * this.level)) / 100);
+        this.routine = this.initializeRoutine(time);  // Inicializa el intervalo
+    },
+    moveCurrentPiece: function (event) {
         // Controla el movimiento (izquierda/derecha) de la pieza actual y la rotación de la misma
-
+        switch (event.keyCode) {
+            case 37:  // izquierda
+                // TODO: Llamar a la función "leftMove" del objeto pieza
+                break;
+            case 39:  // derecha
+                // TODO: Llamar a la función "rightMove" del objeto pieza
+                break;
+            case 40:  // abajo
+                // TODO: Bajar la pieza
+                break;
+            case 65:  // A
+                // TODO: Llamar a la función "leftRotate" del objeto pieza
+                break;
+            case 68:  // A
+                // TODO: Llamar a la función "rightRotate" del objeto pieza
+                break;
+        }
     },
     piecesFallMovement: function () {
         // Hace que la pieza actual caiga una casilla hacia abajo
-
+        // TODO: Llamar a la función "downMove" del objeto pieza.
+        /*
+            IDEA
+            La función "downMove" devolverá true si ha podido realizar el movimiento, sino
+            devolverá false para dar paso a la siguiente pieza.
+        */
     },
     initializeBoard: function () {
         var result = [];
@@ -77,15 +133,26 @@ var Tetris = {
         });
         return value;
     },
+    increaseScore: function (points) {
+        // Incrementa la puntuación
+        this.score += points;
+    },
+    paintScreen: function () {
+        // Muestra el videojuego por pantalla
+        // IDEA: Hacer una tabla y hacer uso de JQuery...
+        // TODO: Mostrar el videojuego en el html
+    },
     initializeRoutine: function (miliseconds) {
         return setInterval((self) => {  // "self" hace referencia a la clase Tetris
-            // Falta hacer la funcionalidad...
-
+            self.piecesFallMovement();
+            self.paintScreen();
         }, miliseconds, this);
     },
     killInterval: function () {
-        clearInterval(this.routine);
-        this.routine = undefined;
+        if (this.routine != undefined) {
+            clearInterval(this.routine);
+            this.routine = undefined;
+        }
     }
 }
 
