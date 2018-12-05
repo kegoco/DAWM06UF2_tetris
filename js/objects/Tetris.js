@@ -65,8 +65,8 @@ var Tetris = {
         var index = Math.floor(Math.random() * AVAILABLE_PIECES.length);
         var data = AVAILABLE_PIECES[index];
 
-        // TODO: Crear una pieza y pasarle a su constructor los datos de la variable "data"
-        // TODO: Guardar la pieza "pieces_to_play/next_piece"
+        // 2.- Se crea una instancia de la pieza pasándole los parámetros
+        this.pieces_to_play.next_piece = new Piece(data.name, data.shape, data.color);
     },
     changeCurrentPiece: function () {
         // La siguiente pieza pasa a ser la pieza actual
@@ -100,8 +100,15 @@ var Tetris = {
                 // TODO: Llamar a la función "rightMove" del objeto pieza
                 break;
             case 40:  // abajo
-                // TODO: Bajar la pieza
-                Tetris.increaseScore(1);  // Incrementa la puntuación
+                // Baja la pieza actual
+                if (Tetris.pieces_to_play.current_piece.downMove()) {
+                    Tetris.increaseScore(1);  // Incrementa la puntuación
+                }
+                else {
+                    // TODO: Instanciar la siguiente pieza
+
+                }
+                Tetris.paintScreen();
                 break;
             case 65:  // A
                 // TODO: Llamar a la función "leftRotate" del objeto pieza
@@ -113,24 +120,14 @@ var Tetris = {
     },
     piecesFallMovement: function () {
         // Hace que la pieza actual caiga una casilla hacia abajo
-        // TODO: Llamar a la función "downMove" del objeto pieza.
-        /*
-            IDEA
-            La función "downMove" devolverá true si ha podido realizar el movimiento, sino
-            devolverá false para dar paso a la siguiente pieza.
+        if (!Tetris.pieces_to_play.current_piece.downMove()) {
+            Tetris.increaseScore(10);  // Incrementa la puntuación
+            // TODO: Instanciar la siguiente pieza
 
-            - Cuando ya no pueda mover más una nueva se tendrá que ejecutar el siguiente
-            trozo de código: "this.increaseScore(10);"
-        */
+        }
     },
     initializeBoard: function () {
         var result = [];
-        // for (var x = 0; x < COLUMNS; x++) {
-        //     result.push([]);
-        //     for (var y = 0; y < ROWS; y++) {
-        //         result[x].push(0);
-        //     }
-        // }
         for (var y = 0; y < ROWS; y++) {
             result.push([]);
             for (var x = 0; x < COLUMNS; x++) {
@@ -148,7 +145,7 @@ var Tetris = {
             }
         });
 
-        $("#max_score").text(value);  // Meustra la puntuación máxima por pantalla
+        $("#max_score").text(value);  // Muestra la puntuación máxima por pantalla
         return value;
     },
     increaseScore: function (points) {
@@ -172,7 +169,9 @@ var Tetris = {
             content += "<tr>";
             for (var x = 0; x < COLUMNS; x++) {
                 // TODO: Mirar la variable "board" para saber el color de la pieza a pintar
-                content += "<td style='background-color: #A9A9A9; width: 20px; height: 20px;'></td>";  // TODO: Dependiendo de la pieza se tendrá que pintar de un color o de otro
+                // Gris: #A9A9A9
+                var color = (this.board[y][x] != 0) ? this.board[y][x] : "#A9A9A9";
+                content += "<td style='background-color: " + color + "; width: 20px; height: 20px;'></td>";  // TODO: Dependiendo de la pieza se tendrá que pintar de un color o de otro
             }
             content += "</tr>";
         }
