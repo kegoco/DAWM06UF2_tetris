@@ -23,6 +23,7 @@ var Tetris = {
     },
     pieces_count: 0,
     level: 1,
+    routine_time: 0,
     routine: undefined,
 
     // Funciones
@@ -46,9 +47,11 @@ var Tetris = {
             "Z": 0
         };
         this.pieces_count = 0;
-        this.level = 1;
+        this.level = 0;
+        this.increaseLevel();
         document.addEventListener('keydown', this.moveCurrentPiece);  // Inicializa el evento para recibir ordenes del teclado
-        this.createRoutine();
+        this.routine_time = 1000;
+        this.createRoutine(true);
 
         // Inicializa la variable "pieces_to_play":
         this.calculateNextPiece();
@@ -76,16 +79,16 @@ var Tetris = {
         this.pieces_count++;
         this.used_pieces[piece_name]++;
         if (this.pieces_count % 10 == 0) {
-            this.level++;
+            this.increaseLevel();
             this.increaseScore(20);  // Incrementa la puntuación
-            this.createRoutine();
+            this.createRoutine(false);
         }
     },
-    createRoutine: function () {
+    createRoutine: function (initGame) {
         // Destruye el intervalo actual y crea otro
         this.killInterval();
-        var time = 1100 - ((1100 * (10 * this.level)) / 100);
-        this.routine = this.initializeRoutine(time);  // Inicializa el intervalo
+        if (!initGame) this.routine_time = this.routine_time - ((this.routine_time * 10) / 100);
+        this.routine = this.initializeRoutine(this.routine_time);  // Inicializa el intervalo
     },
     moveCurrentPiece: function (event) {
         // Controla el movimiento (izquierda/derecha) de la pieza actual y la rotación de la misma
@@ -153,6 +156,11 @@ var Tetris = {
         this.score += points;
         this.refreshScore();
     },
+    increaseLevel: function () {
+        // Incrementa el nivel y lo muestra
+        this.level++;
+        $("#level").text(this.level);
+    },
     paintScreen: function () {
         // Muestra el videojuego por pantalla
         // IDEA: Hacer una tabla y hacer uso de JQuery...
@@ -177,6 +185,7 @@ var Tetris = {
         return setInterval((self) => {  // "self" hace referencia a la clase Tetris
             self.piecesFallMovement();
             self.paintScreen();
+            console.log(self.routine_time);
         }, miliseconds, this);
     },
     killInterval: function () {
