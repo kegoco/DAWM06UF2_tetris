@@ -15,9 +15,9 @@ const AVAILABLE_PIECES = [
     {
         name: "J",
         shape: [
-            [0, 1, 0, 0],
-            [0, 1, 0, 0],
-            [1, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 1, 1, 0],
             [0, 0, 0, 0]
         ],
         color: "pink"
@@ -45,9 +45,9 @@ const AVAILABLE_PIECES = [
     {
         name: "S",
         shape: [
+            [0, 0, 0, 0],
             [0, 1, 1, 0],
             [1, 1, 0, 0],
-            [0, 0, 0, 0],
             [0, 0, 0, 0]
         ],
         color: "red"
@@ -55,9 +55,9 @@ const AVAILABLE_PIECES = [
     {
         name: "T",
         shape: [
+            [0, 0, 0, 0],
             [1, 1, 1, 0],
             [0, 1, 0, 0],
-            [0, 0, 0, 0],
             [0, 0, 0, 0]
         ],
         color: "purple"

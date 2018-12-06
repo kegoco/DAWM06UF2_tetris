@@ -112,11 +112,13 @@ var Tetris = {
                 }
                 Tetris.paintScreen();
                 break;
-            case 65:  // A
-                // TODO: Llamar a la función "leftRotate" del objeto pieza
+            case 65:  // A => Rotas izquierda
+                Tetris.pieces_to_play.current_piece.leftRotate();
+                Tetris.paintScreen();
                 break;
-            case 68:  // A
-                // TODO: Llamar a la función "rightRotate" del objeto pieza
+            case 68:  // D => Rotas derecha
+                Tetris.pieces_to_play.current_piece.rightRotate();
+                Tetris.paintScreen();
                 break;
         }
     },
