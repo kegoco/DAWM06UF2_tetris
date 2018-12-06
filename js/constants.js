@@ -35,9 +35,9 @@ const AVAILABLE_PIECES = [
     {
         name: "O",
         shape: [
-            [0, 1, 1, 0],
-            [0, 1, 1, 0],
             [0, 0, 0, 0],
+            [0, 1, 1, 0],
+            [0, 1, 1, 0],
             [0, 0, 0, 0]
         ],
         color: "yellow"
@@ -65,9 +65,9 @@ const AVAILABLE_PIECES = [
     {
         name: "Z",
         shape: [
-            [1, 1, 0, 0],
-            [0, 1, 1, 0],
             [0, 0, 0, 0],
+            [0, 1, 1, 0],
+            [0, 0, 1, 1],
             [0, 0, 0, 0]
         ],
         color: "green"

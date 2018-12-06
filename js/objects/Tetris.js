@@ -94,10 +94,12 @@ var Tetris = {
         // Controla el movimiento (izquierda/derecha) de la pieza actual y la rotación de la misma
         switch (event.keyCode) {
             case 37:  // izquierda
-                // TODO: Llamar a la función "leftMove" del objeto pieza
+                Tetris.pieces_to_play.current_piece.leftMove();
+                Tetris.paintScreen();
                 break;
             case 39:  // derecha
-                // TODO: Llamar a la función "rightMove" del objeto pieza
+                Tetris.pieces_to_play.current_piece.rightMove();
+                Tetris.paintScreen();
                 break;
             case 40:  // abajo
                 // Baja la pieza actual
