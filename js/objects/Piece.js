@@ -102,6 +102,10 @@ Piece.prototype.downMove = function () {
                     // Si la posición del tablero está libre entonces la pieza se podrá mover
                     can_move = true;
                 }
+                else if (board[y][x] != 0) {
+                    // Si la posición del tablero está ocupada entonces la pieza ya no se podrá mover más
+                    out_board = true;
+                }
             }
             x_pos++;
         }

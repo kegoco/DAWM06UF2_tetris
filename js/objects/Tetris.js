@@ -107,8 +107,8 @@ var Tetris = {
                     Tetris.increaseScore(1);  // Incrementa la puntuación
                 }
                 else {
-                    // TODO: Instanciar la siguiente pieza
-
+                    Tetris.changeCurrentPiece();
+                    Tetris.calculateNextPiece();
                 }
                 Tetris.paintScreen();
                 break;
@@ -124,8 +124,8 @@ var Tetris = {
         // Hace que la pieza actual caiga una casilla hacia abajo
         if (!Tetris.pieces_to_play.current_piece.downMove()) {
             Tetris.increaseScore(10);  // Incrementa la puntuación
-            // TODO: Instanciar la siguiente pieza
-
+            Tetris.changeCurrentPiece();
+            Tetris.calculateNextPiece();
         }
     },
     initializeBoard: function () {
