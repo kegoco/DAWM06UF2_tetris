@@ -107,6 +107,7 @@ var Tetris = {
                     Tetris.increaseScore(1);  // Incrementa la puntuación
                 }
                 else {
+                    Tetris.checkForHorizontalLine();
                     Tetris.changeCurrentPiece();
                     Tetris.calculateNextPiece();
                 }
@@ -125,9 +126,10 @@ var Tetris = {
     piecesFallMovement: function () {
         // Hace que la pieza actual caiga una casilla hacia abajo
         if (!Tetris.pieces_to_play.current_piece.downMove()) {
-            Tetris.increaseScore(10);  // Incrementa la puntuación
-            Tetris.changeCurrentPiece();
-            Tetris.calculateNextPiece();
+            this.increaseScore(10);  // Incrementa la puntuación
+            this.checkForHorizontalLine();
+            this.changeCurrentPiece();
+            this.calculateNextPiece();
         }
     },
     initializeBoard: function () {
@@ -180,6 +182,31 @@ var Tetris = {
             content += "</tr>";
         }
         table.append(content);
+    },
+    checkForHorizontalLine: function () {
+        // Comprueba si se ha completado alguna línea horizontal para borrarla
+        for (var y = 0; y < ROWS; y++) {
+            var checker = 0;
+            for (var x = 0; x < COLUMNS; x++) {
+                if (this.board[y][x] != 0) {
+                    checker++;
+                }
+            }
+            if (checker == COLUMNS) {
+                // Si la línea está completa la borra
+                for (var x = 0; x < COLUMNS; x++) {
+                    this.board[y][x] = 0;
+                }
+
+                // Baja las piezas de arriba
+                for (var y2 = y; y2 < ROWS - 1; y2++) {
+                    for (var x = 0; x < COLUMNS; x++) {
+                        this.board[y2][x] = this.board[y2 + 1][x];
+                    }
+                }
+                y--;  // Resta una posición a la "y", ya que todas las piezas que habían arriba han bajado, y hay que comprobarlas
+            }
+        }
     },
     refreshScore: function () {
         $("#score").text(this.score);
