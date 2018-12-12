@@ -4,24 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Kevin Gómez Codina - Tetris</title>
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
 </head>
 
 <body>
-    <div>
+    <div class="game-container">
+        <!-- GAME BOARD -->
+        <table id="tetris" class="tetris-board"></table>
+
         <div>
-            <span>Score: </span>
-            <span id="score">-</span>
+            <!-- SCORE AND LEVEL -->
+            <table class="score-table">
+                <tr>
+                    <td>
+                        <b>Score:</b>
+                    </td>
+                    <td>
+                        <span id="score">-</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Max Score:</b>
+                    </td>
+                    <td>
+                        <span id="max_score">-</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Level:</b>
+                    </td>
+                    <td>
+                        <span id="level">-</span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- NEXT PIECE -->
+            <table id="next_piece" class="tetris-board"></table>
         </div>
-        <div>
-            <span>Max Score: </span>
-            <span id="max_score">-</span>
-        </div>
-        <div>
-            <span>Level: </span>
-            <span id="level">-</span>
+
+        <!-- GAME OVER MESSAGE -->
+        <div id="go-container" style="display:none;">
+            <h2>Game Over</h2>
+            <p>Your score: <span id="go-score">-</span></p>
+            <p>Max score: <span id="go-max_score">-</span></p>
+            <button>Play again</button>
         </div>
     </div>
-    <table id="tetris" style="border: 1px solid black; background-color: black;"></table>
 
     <!-- CARGA DE JQUERY -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

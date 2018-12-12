@@ -2,7 +2,7 @@ var Piece = function (name, shape, color) {
     this.name = name;
     this.shape = shape;
     this.color = color;
-    this.position = [21, 4];  // y - x
+    this.position = START_POSITION;  // y - x
 }
 Piece.prototype.leftMove = function () {
     var board = Tetris.board;  // Coge el tablero
@@ -221,7 +221,16 @@ Piece.prototype.rightRotate = function () {
     this.paintOnTheBoard(Tetris.board, this.color);
 }
 Piece.prototype.getPieceShape = function () {
+    // Retorna la forma de la pieza
     return this.shape;
+}
+Piece.prototype.getColor = function () {
+    // Retorna el color de la pieza
+    return this.color;
+}
+Piece.prototype.getPosition = function () {
+    // Retorna la posición de la pieza
+    return this.position;
 }
 Piece.prototype.paintOnTheBoard = function (board, value) {
     // Pinta en el tablero el color que se le pase por parámetro

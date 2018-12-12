@@ -1,6 +1,7 @@
 // Constantes utilizadas en el videojuego
 const ROWS = 25;
 const COLUMNS = 10;
+const START_POSITION = [21, 4];  // y - x
 const AVAILABLE_PIECES = [
     {
         name: "I",
@@ -20,7 +21,7 @@ const AVAILABLE_PIECES = [
             [0, 1, 1, 0],
             [0, 0, 0, 0]
         ],
-        color: "pink"
+        color: "HotPink"
     },
     {
         name: "L",

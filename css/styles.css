@@ -1,0 +1,16 @@
+.game-container {
+    display: flex;
+    justify-content: center;
+}
+.game-container > div {
+    margin-left: 10px;
+}
+
+.tetris-board {
+    border: 1px solid black;
+    background-color: black;
+}
+
+.score-table {
+    border: 2px solid black;
+}

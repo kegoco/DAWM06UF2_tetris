@@ -30,6 +30,7 @@ var Tetris = {
     initialize: function () {
         this.game_state = true;
         this.board = this.initializeBoard();
+        this.paintScreen();  // Pinta la pantalla para mostrar el tablero desde el principio.
         this.board_state = true;
         this.score = 0;
         this.max_score = this.loadMaxScore();
@@ -67,12 +68,15 @@ var Tetris = {
 
         // 2.- Se crea una instancia de la pieza pasándole los parámetros
         this.pieces_to_play.next_piece = new Piece(data.name, data.shape, data.color);
+
+        // 3.- Pinta la siguiente pieza por pantalla
+        this.paintNextPiece();
     },
     changeCurrentPiece: function () {
         // La siguiente pieza pasa a ser la pieza actual
         this.pieces_to_play.current_piece = this.pieces_to_play.next_piece;
-        this.next_piece = {};
-        this.incrementUsedPieces(this.pieces_to_play.current_piece.name);  // TODO: "name" contandrá el nombre de la pieza
+        this.pieces_to_play.next_piece = {};
+        this.incrementUsedPieces(this.pieces_to_play.current_piece.name);
     },
     incrementUsedPieces: function (piece_name) {
         // Incrementa el uso de una pieza
@@ -104,12 +108,12 @@ var Tetris = {
             case 40:  // abajo
                 // Baja la pieza actual
                 if (Tetris.pieces_to_play.current_piece.downMove()) {
+                    // La pieza puede bajar
                     Tetris.increaseScore(1);  // Incrementa la puntuación
                 }
                 else {
-                    Tetris.checkForHorizontalLine();
-                    Tetris.changeCurrentPiece();
-                    Tetris.calculateNextPiece();
+                    // La pieza ya no puede bajar
+                    Tetris.isGameOver();  // Comprueba si la partida va o no ha finalizar
                 }
                 Tetris.paintScreen();
                 break;
@@ -125,11 +129,8 @@ var Tetris = {
     },
     piecesFallMovement: function () {
         // Hace que la pieza actual caiga una casilla hacia abajo
-        if (!Tetris.pieces_to_play.current_piece.downMove()) {
-            this.increaseScore(10);  // Incrementa la puntuación
-            this.checkForHorizontalLine();
-            this.changeCurrentPiece();
-            this.calculateNextPiece();
+        if (!Tetris.pieces_to_play.current_piece.downMove() && !this.isGameOver()) {
+            this.increaseScore(10);  // Incrementa la puntuación si la partida todavía no ha acabado
         }
     },
     initializeBoard: function () {
@@ -166,21 +167,35 @@ var Tetris = {
     },
     paintScreen: function () {
         // Muestra el videojuego por pantalla
-        // IDEA: Hacer una tabla y hacer uso de JQuery...
-        // TODO: Mostrar el videojuego en el html
         var table = $("#tetris");
         table.empty();
         var content = "";
         for (var y = ROWS - 1; y >= 0; y--) {
             content += "<tr>";
             for (var x = 0; x < COLUMNS; x++) {
-                // TODO: Mirar la variable "board" para saber el color de la pieza a pintar
-                // Gris: #A9A9A9
-                var color = (this.board[y][x] != 0) ? this.board[y][x] : "#A9A9A9";
-                content += "<td style='background-color: " + color + "; width: 20px; height: 20px;'></td>";  // TODO: Dependiendo de la pieza se tendrá que pintar de un color o de otro
+                var color = (this.board[y][x] != 0) ? this.board[y][x] : "#A9A9A9";  // Gris: #A9A9A9
+                content += "<td style='background-color: " + color + "; width: 20px; height: 20px;'></td>";
             }
             content += "</tr>";
         }
+        table.append(content);
+    },
+    paintNextPiece: function () {
+        var table = $("#next_piece");
+        table.empty();
+        var piece = this.pieces_to_play.next_piece.getPieceShape();
+        var piece_color = this.pieces_to_play.next_piece.getColor();
+        var content = "";
+
+        for (var y = 0; y < piece.length; y++) {
+            content += "<tr>";
+            for (var x = 0; x < piece[y].length; x++) {
+                var color = (piece[y][x] != 0) ? piece_color : "#A9A9A9";  // Gris: #A9A9A9
+                content += "<td style='background-color: " + color + "; width: 20px; height: 20px;'></td>";
+            }
+            content += "</tr>";
+        }
+
         table.append(content);
     },
     checkForHorizontalLine: function () {
@@ -211,7 +226,33 @@ var Tetris = {
     refreshScore: function () {
         $("#score").text(this.score);
     },
+    isGameOver: function () {
+        var piece_position = this.pieces_to_play.current_piece.getPosition();
+        if (piece_position[0] == START_POSITION[0] && piece_position[1] == START_POSITION[1]) {
+            // Si la posición actual es la misma que la inicial será fin del juego
+            this.gameOver();
+            return true;
+        }
+        else {
+            // Si la partida continua:
+            this.checkForHorizontalLine();  // Calcula si hay líneas horizontales
+            this.changeCurrentPiece();  // Cambia a la siguiente pieza
+            this.calculateNextPiece();  // Calcula la siguiente pieza
+            return false;
+        }
+    },
+    gameOver: function () {
+        // Finaliza el videojuego en caso de que esté activo
+        if (this.game_state) {
+            this.game_state = false;
+            document.removeEventListener('keydown', this.moveCurrentPiece);  // Borra el evento para recibir ordenes del teclado
+            this.killInterval();
+            // TODO: Guardar la máxima puntuación en una cookie
+            // TODO: Mostrar mensaje por pantalla para reiniciar el videojuego
+        }
+    },
     initializeRoutine: function (miliseconds) {
+        // Retorna el intervalo
         return setInterval((self) => {  // "self" hace referencia a la clase Tetris
             self.piecesFallMovement();
             self.paintScreen();
@@ -219,6 +260,7 @@ var Tetris = {
         }, miliseconds, this);
     },
     killInterval: function () {
+        // Si hay intervalo lo elimina
         if (this.routine != undefined) {
             clearInterval(this.routine);
             this.routine = undefined;
