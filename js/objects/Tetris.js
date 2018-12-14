@@ -61,6 +61,7 @@ var Tetris = {
 
         console.log("::: TETRIS INICIALIZADO :::");
     },
+
     calculateNextPiece: function () {
         // 1.- Coger de forma aleatoria una pieza
         var index = Math.floor(Math.random() * AVAILABLE_PIECES.length);
@@ -72,12 +73,14 @@ var Tetris = {
         // 3.- Pinta la siguiente pieza por pantalla
         this.paintNextPiece();
     },
+
     changeCurrentPiece: function () {
         // La siguiente pieza pasa a ser la pieza actual
         this.pieces_to_play.current_piece = this.pieces_to_play.next_piece;
         this.pieces_to_play.next_piece = {};
         this.incrementUsedPieces(this.pieces_to_play.current_piece.name);
     },
+
     incrementUsedPieces: function (piece_name) {
         // Incrementa el uso de una pieza
         this.pieces_count++;
@@ -88,12 +91,14 @@ var Tetris = {
             this.createRoutine(false);
         }
     },
+
     createRoutine: function (initGame) {
         // Destruye el intervalo actual y crea otro
         this.killInterval();
         if (!initGame) this.routine_time = this.routine_time - ((this.routine_time * 10) / 100);
         this.routine = this.initializeRoutine(this.routine_time);  // Inicializa el intervalo
     },
+
     moveCurrentPiece: function (event) {
         // Controla el movimiento (izquierda/derecha) de la pieza actual y la rotación de la misma
         switch (event.keyCode) {
@@ -127,12 +132,14 @@ var Tetris = {
                 break;
         }
     },
+
     piecesFallMovement: function () {
         // Hace que la pieza actual caiga una casilla hacia abajo
         if (!Tetris.pieces_to_play.current_piece.downMove() && !this.isGameOver()) {
             this.increaseScore(10);  // Incrementa la puntuación si la partida todavía no ha acabado
         }
     },
+
     initializeBoard: function () {
         var result = [];
         for (var y = 0; y < ROWS; y++) {
@@ -143,6 +150,7 @@ var Tetris = {
         }
         return result;
     },
+
     loadMaxScore: function () {
         var value = 0;
         document.cookie.split("; ").filter((item) => {
@@ -155,16 +163,26 @@ var Tetris = {
         $("#max_score").text(value);  // Muestra la puntuación máxima por pantalla
         return value;
     },
+
+    saveMaxScore: function () {
+        var cookie_expire = new Date();
+        cookie_expire.setFullYear(cookie_expire.getFullYear() + 1);  // Hace que la cookie expire en un año
+
+        document.cookie = "max_score=" + this.score + ";expires=" + cookie_expire;
+    },
+
     increaseScore: function (points) {
         // Incrementa la puntuación
         this.score += points;
         this.refreshScore();
     },
+
     increaseLevel: function () {
         // Incrementa el nivel y lo muestra
         this.level++;
         $("#level").text(this.level);
     },
+
     paintScreen: function () {
         // Muestra el videojuego por pantalla
         var table = $("#tetris");
@@ -180,6 +198,7 @@ var Tetris = {
         }
         table.append(content);
     },
+
     paintNextPiece: function () {
         var table = $("#next_piece");
         table.empty();
@@ -198,6 +217,7 @@ var Tetris = {
 
         table.append(content);
     },
+
     checkForHorizontalLine: function () {
         // Comprueba si se ha completado alguna línea horizontal para borrarla
         for (var y = 0; y < ROWS; y++) {
@@ -223,9 +243,11 @@ var Tetris = {
             }
         }
     },
+
     refreshScore: function () {
         $("#score").text(this.score);
     },
+    
     isGameOver: function () {
         var piece_position = this.pieces_to_play.current_piece.getPosition();
         if (piece_position[0] == START_POSITION[0] && piece_position[1] == START_POSITION[1]) {
@@ -241,24 +263,36 @@ var Tetris = {
             return false;
         }
     },
+
     gameOver: function () {
         // Finaliza el videojuego en caso de que esté activo
         if (this.game_state) {
             this.game_state = false;
             document.removeEventListener('keydown', this.moveCurrentPiece);  // Borra el evento para recibir ordenes del teclado
             this.killInterval();
-            // TODO: Guardar la máxima puntuación en una cookie
-            // TODO: Mostrar mensaje por pantalla para reiniciar el videojuego
+            if (this.score > this.max_score) {
+                // Guarda la puntuación actual en la cookie si es más alta que la puntuación máxima anterior
+                this.saveMaxScore();
+            }
+            this.showGameOverMessage();
         }
     },
+
+    showGameOverMessage: function () {
+        // Muestra la ventana de fin de juego con los datos necesarios
+        $("#go-score").text(this.score);
+        $("#go-max_score").text(this.max_score);
+        $("#go-container").css("display", "inline");
+    },
+
     initializeRoutine: function (miliseconds) {
         // Retorna el intervalo
         return setInterval((self) => {  // "self" hace referencia a la clase Tetris
-            self.piecesFallMovement();
-            self.paintScreen();
-            console.log(self.routine_time);
+            this.piecesFallMovement();
+            this.paintScreen();
         }, miliseconds, this);
     },
+    
     killInterval: function () {
         // Si hay intervalo lo elimina
         if (this.routine != undefined) {

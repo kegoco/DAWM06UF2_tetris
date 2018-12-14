@@ -14,3 +14,18 @@
 .score-table {
     border: 2px solid black;
 }
+
+.go-container {
+    position: absolute;
+    background-color: red;
+    border: 2px solid black;
+    color: white;
+    width: 25%;
+    height: 25%;
+    justify-content: center;
+    text-align: center;
+}
+
+.scores {
+    text-decoration: underline;
+}
