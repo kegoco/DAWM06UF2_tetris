@@ -1,7 +1,8 @@
-// Script principal...
+// ::: Script principal :::
 Tetris.initialize();
 
 // Reinicia el videojuego cuando el usuario pulse el botón de reiniciar
 $("#go-restart").click(function () {
-    location.reload();
+    $("#go-container").css("display", "none");  // Oculta la ventana de GameOver.
+    Tetris.initialize();
 });

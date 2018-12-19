@@ -34,6 +34,7 @@ var Tetris = {
         this.board_state = true;
         this.score = 0;
         this.max_score = this.loadMaxScore();
+        this.refreshScore();
         this.pieces_to_play = {
             current_piece: {},
             next_piece: {}
