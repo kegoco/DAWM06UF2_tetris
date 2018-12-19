@@ -53,7 +53,7 @@ var Tetris = {
         this.increaseLevel();
         document.addEventListener('keydown', this.moveCurrentPiece);  // Inicializa el evento para recibir ordenes del teclado
         this.routine_time = 1000;
-        this.createRoutine(true);
+        this.createRoutine(true);  // Llama a la función para crear el intervalo
 
         // Inicializa la variable "pieces_to_play":
         this.calculateNextPiece();
@@ -96,6 +96,8 @@ var Tetris = {
     createRoutine: function (initGame) {
         // Destruye el intervalo actual y crea otro
         this.killInterval();
+
+        // Reduce el tiempo del intervalo en caso de que esta función no se llame desde la función de inicializar
         if (!initGame) this.routine_time = this.routine_time - ((this.routine_time * 10) / 100);
         this.routine = this.initializeRoutine(this.routine_time);  // Inicializa el intervalo
     },
@@ -123,11 +125,11 @@ var Tetris = {
                 }
                 Tetris.paintScreen();
                 break;
-            case 65:  // A => Rotas izquierda
+            case 65:  // A => Rotar izquierda
                 Tetris.pieces_to_play.current_piece.leftRotate();
                 Tetris.paintScreen();
                 break;
-            case 68:  // D => Rotas derecha
+            case 68:  // D => Rotar derecha
                 Tetris.pieces_to_play.current_piece.rightRotate();
                 Tetris.paintScreen();
                 break;
@@ -142,6 +144,7 @@ var Tetris = {
     },
 
     initializeBoard: function () {
+        // Inicializa el tablero poniendo todos sus campos a cero
         var result = [];
         for (var y = 0; y < ROWS; y++) {
             result.push([]);
@@ -153,6 +156,7 @@ var Tetris = {
     },
 
     loadMaxScore: function () {
+        // Carga la máxima puntuación que hay almacenada en la cookie
         var value = 0;
         document.cookie.split("; ").filter((item) => {
             var itemArray = item.split("=");
@@ -166,6 +170,7 @@ var Tetris = {
     },
 
     saveMaxScore: function () {
+        // Guarda la puntuación máxima en una cookie
         var cookie_expire = new Date();
         cookie_expire.setFullYear(cookie_expire.getFullYear() + 1);  // Hace que la cookie expire en un año
 
@@ -201,6 +206,7 @@ var Tetris = {
     },
 
     paintNextPiece: function () {
+        // Hace que se pinte la pieza siguiente en una tabla separada del tablero
         var table = $("#next_piece");
         table.empty();
         var piece = this.pieces_to_play.next_piece.getPieceShape();
